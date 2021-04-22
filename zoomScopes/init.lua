@@ -22,10 +22,10 @@ zoom = {
     GameSettings = require("modules/GameSettings"),
 
     defaultSettings = {modEnabled = true,
-                       Wea_SniperRifle = {enabled = true, levels = 3, amount = 3, scopeNeeded = true},
-                       Wea_PrecisionRifle = {enabled = true, levels = 2, amount = 2, scopeNeeded = true},
-                       Wea_LightMachineGun = {enabled = false, levels = 1, amount = 2, scopeNeeded = true},
-                       Wea_Rifle = {enabled = false, levels = 1, amount = 2, scopeNeeded = true}},
+                       Wea_SniperRifle = {enabled = true, levels = 3, amount = 3, scopeNeeded = false},
+                       Wea_PrecisionRifle = {enabled = true, levels = 3, amount = 3, scopeNeeded = true},
+                       Wea_LightMachineGun = {enabled = false, levels = 2, amount = 2, scopeNeeded = true},
+                       Wea_Rifle = {enabled = false, levels = 2, amount = 2, scopeNeeded = true}},
     currentZoom = 0,
     weaDefaultZoom = 0,
     zoomLevel = 0,
@@ -41,6 +41,7 @@ registerForEvent("onInit", function()
 	zoom.config = zoom.fileSys.loadFile("config/config.json") 
     zoom.input.startInputObserver(zoom)
     zoom.GameSettings.Set("/gameplay/difficulty/SwayEffect", 1)
+    zoom.GameSettings.Save()
 end)
 
 registerForEvent("onDraw", function()
@@ -58,6 +59,10 @@ registerForEvent("onOverlayClose", function()
 end)
 
 registerHotkey('zoom', 'Change Zoom Level', function()
+    if zoom.GameSettings.Get("/gameplay/difficulty/SwayEffect") ~= 1 then
+        zoom.GameSettings.Set("/gameplay/difficulty/SwayEffect", 1)
+        zoom.GameSettings.Save()
+    end
     if zoom.zoomLevel < zoom.totalZoomLevels then
         zoom.zoomLevel = zoom.zoomLevel + 1
         zoom.currentZoom = zoom.currentZoom + zoom.zoomIncrement
